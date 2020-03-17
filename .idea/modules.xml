@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/CodeStatistics.iml" filepath="$PROJECT_DIR$/.idea/modules/CodeStatistics.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/CodeStatistics_main.iml" filepath="$PROJECT_DIR$/.idea/modules/CodeStatistics_main.iml" group="CodeStatistics" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/CodeStatistics_test.iml" filepath="$PROJECT_DIR$/.idea/modules/CodeStatistics_test.iml" group="CodeStatistics" />
+    </modules>
+  </component>
+</project>
