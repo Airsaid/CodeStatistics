@@ -12,7 +12,7 @@ import tornadofx.FX
  */
 class MainApp : App(MainView::class, Styles::class) {
   init {
-    // 设置布局调试器的快捷键为 control + F12
+    // 设置布局调试器的快捷键为 controller + F12
     FX.layoutDebuggerShortcut = KeyCodeCombination(KeyCode.F12, KeyCombination.CONTROL_DOWN)
   }
 }
