@@ -5,6 +5,8 @@ import com.airsaid.codestatistics.data.viewmodel.DirectorysViewModel
 import javafx.collections.FXCollections
 import tornadofx.Controller
 import tornadofx.chooseDirectory
+import tornadofx.onChange
+import tornadofx.toJSON
 
 /**
  * @author airsaid
@@ -14,6 +16,24 @@ class DirectorysController : Controller() {
   val directorys = FXCollections.observableArrayList<StringSelected>()
 
   val selectedDirectory = DirectorysViewModel()
+
+  init {
+    loadLocalData()
+  }
+
+  private fun loadLocalData() {
+    runAsync {
+      val jsonArray = config.jsonArray(KEY_ADD_DIRECTORYS)
+      jsonArray?.map {
+        val directory = StringSelected()
+        directory.updateModel(it.asJsonObject())
+        directory
+      }
+    } ui {
+      it?.let { directorys.addAll(it) }
+      directorys.onChange { save() }
+    }
+  }
 
   /**
    * 添加要扫描的代码目录。
@@ -29,5 +49,22 @@ class DirectorysController : Controller() {
   fun deleteSelectedDirectory() {
     val selectedDir = selectedDirectory.item ?: return
     directorys.remove(selectedDir)
+  }
+
+  /**
+   * 将添加的目录保存到本地中。
+   */
+  fun save() {
+    runAsync {
+      val json = directorys.toJSON().toString()
+      if (json.isNotEmpty()) {
+        config[KEY_ADD_DIRECTORYS] = json
+        config.save()
+      }
+    }
+  }
+
+  companion object {
+    const val KEY_ADD_DIRECTORYS = "addFileDir"
   }
 }
