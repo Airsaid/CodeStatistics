@@ -4,6 +4,7 @@ import com.airsaid.codestatistics.app.Styles
 import com.airsaid.codestatistics.constant.Messages
 import com.airsaid.codestatistics.controller.DirectorysController
 import com.airsaid.codestatistics.controller.ExtensionsController
+import com.airsaid.codestatistics.controller.StatisticsController
 import com.airsaid.codestatistics.data.StringSelected
 import com.airsaid.codestatistics.extension.isLetter
 import javafx.beans.property.SimpleBooleanProperty
@@ -23,10 +24,12 @@ class RequiredView : View() {
 
   private val directoryController: DirectorysController by inject()
   private val extensionController: ExtensionsController by inject()
+  private val statisticsController: StatisticsController by inject()
 
   private val startDisable = SimpleBooleanProperty(true)
 
   override val root = vbox {
+    paddingRight = 10.0
     prefHeight = 600.0
     prefWidth = 200.0
 
@@ -72,7 +75,7 @@ class RequiredView : View() {
       alignment = Pos.CENTER_LEFT
       vboxConstraints { marginTopBottom(10.0) }
 
-      label(messages[Messages.FILE_TYPE]) { addClass(Styles.subTitle) }
+      label(messages[Messages.FILE_TYPE_TITLE]) { addClass(Styles.subTitle) }
 
       val region = region()
 
@@ -108,12 +111,8 @@ class RequiredView : View() {
       useMaxWidth = true
       vgrow = Priority.ALWAYS
       vboxConstraints { marginTop = 10.0 }
-      disableWhen { startDisable }
-
-      action {
-        // TODO
-        log.info("start")
-      }
+      disableWhen { startDisable or statisticsController.isRunnable }
+      action { startStatistics() }
     }
 
   }
@@ -148,6 +147,12 @@ class RequiredView : View() {
         }
       }
     }
+  }
+
+  private fun startStatistics() {
+    val files = directoryController.getDirectoryFiles()
+    val extensions = extensionController.getExtensionSet()
+    statisticsController.startStatistics(files, extensions)
   }
 
   // 多次使用同一个示例会导致只有最后使用的生效，因此每次使用时都创建一个新的实例

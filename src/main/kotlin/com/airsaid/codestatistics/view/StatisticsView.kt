@@ -10,14 +10,16 @@ import tornadofx.paddingAll
 /**
  * @author airsaid
  */
-class MainView : View(messages[Messages.APPLICATION_NAME]) {
+class StatisticsView : View(messages[Messages.APPLICATION_NAME]) {
 
   private val requiredView: RequiredView by inject()
+  private val statisticsDetailView: StatisticsDetailView by inject()
 
   override val root = borderpane {
     paddingAll = 10
 
     left = requiredView.root
-  }
 
+    center = statisticsDetailView.root
+  }
 }

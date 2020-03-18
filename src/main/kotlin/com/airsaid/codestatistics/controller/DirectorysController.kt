@@ -5,8 +5,8 @@ import com.airsaid.codestatistics.data.viewmodel.DirectorysViewModel
 import javafx.collections.FXCollections
 import tornadofx.Controller
 import tornadofx.chooseDirectory
-import tornadofx.onChange
 import tornadofx.toJSON
+import java.io.File
 
 /**
  * @author airsaid
@@ -31,7 +31,6 @@ class DirectorysController : Controller() {
       }
     } ui {
       it?.let { directorys.addAll(it) }
-      directorys.onChange { save() }
     }
   }
 
@@ -62,6 +61,10 @@ class DirectorysController : Controller() {
         config.save()
       }
     }
+  }
+
+  fun getDirectoryFiles(): List<File> {
+    return directorys.filter { it.selected }.map { File(it.text) }
   }
 
   companion object {

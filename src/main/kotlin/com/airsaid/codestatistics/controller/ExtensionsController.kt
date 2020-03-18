@@ -4,7 +4,6 @@ import com.airsaid.codestatistics.data.StringSelected
 import com.airsaid.codestatistics.data.viewmodel.ExtensionViewModel
 import javafx.collections.FXCollections
 import tornadofx.Controller
-import tornadofx.onChange
 import tornadofx.toJSON
 
 /**
@@ -30,7 +29,6 @@ class ExtensionsController : Controller() {
       }
     } ui {
       it?.let { extensions.addAll(it) }
-      extensions.onChange { save() }
     }
   }
 
@@ -61,6 +59,10 @@ class ExtensionsController : Controller() {
         config.save()
       }
     }
+  }
+
+  fun getExtensionSet(): HashSet<String> {
+    return extensions.filter { it.selected }.map { it.text }.toHashSet()
   }
 
   companion object {

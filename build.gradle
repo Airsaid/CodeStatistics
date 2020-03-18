@@ -38,7 +38,7 @@ dependencies {
     testRuntime "org.junit.jupiter:junit-jupiter-engine:$junit_version"
 }
 
-mainClassName = "com.airsaid.codestatistics.app.MainApp"
+mainClassName = "com.airsaid.codestatistics.app.StatisticsApp"
 
 jar {
     manifest {
