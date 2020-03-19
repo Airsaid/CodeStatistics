@@ -6,10 +6,13 @@ import tornadofx.property
 /**
  * @author airsaid
  */
-open class Statistics(fileSize: Long = 0L, totalLine: Long = 0L, codeLine: Long = 0L,
+open class Statistics(fileSize: Long = 0L, fileCount: Long = 0L, totalLine: Long = 0L, codeLine: Long = 0L,
                  commentLine: Long = 0L, blankLine: Long = 0L, time: Long = 0L) {
   var fileSize by property(fileSize)
   fun fileSizeProperty() = getProperty(Statistics::fileSize)
+
+  var fileCount by property(fileCount)
+  fun fileCountProperty() = getProperty(Statistics::fileCount)
 
   var totalLine by property(totalLine)
   fun totalLineProperty() = getProperty(Statistics::totalLine)

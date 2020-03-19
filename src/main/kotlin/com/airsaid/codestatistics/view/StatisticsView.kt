@@ -14,6 +14,7 @@ class StatisticsView : View(messages[Messages.APPLICATION_NAME]) {
 
   private val requiredView: RequiredView by inject()
   private val statisticsDetailView: StatisticsDetailView by inject()
+  private val statisticsTotalView: StatisticsTotalView by inject()
 
   override val root = borderpane {
     paddingAll = 10
@@ -21,5 +22,7 @@ class StatisticsView : View(messages[Messages.APPLICATION_NAME]) {
     left = requiredView.root
 
     center = statisticsDetailView.root
+
+    right = statisticsTotalView.root
   }
 }

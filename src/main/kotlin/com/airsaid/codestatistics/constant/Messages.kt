@@ -21,4 +21,7 @@ object Messages {
   const val CODE_LINE = "codeLine"
   const val COMMENT_LINE = "commentLine"
   const val BLANK_LINE = "blankLine"
+  const val STATISTICS = "statistics"
+  const val STATISTICS_TIME = "statisticsTime"
+  const val FILE_COUNT = "fileCount"
 }
