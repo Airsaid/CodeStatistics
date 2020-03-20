@@ -7,12 +7,12 @@ import tornadofx.property
  * @author airsaid
  */
 class StatisticsDetail(name: String = "", extension: String = "", directory: String = "") : Statistics() {
-  var name by property(name)
+  var name: String by property(name)
   fun nameProperty() = getProperty(StatisticsDetail::name)
 
-  var extension by property(extension)
+  var extension: String by property(extension)
   fun extensionProperty() = getProperty(StatisticsDetail::extension)
 
-  var directory by property(directory)
+  var directory: String by property(directory)
   fun directoryProperty() = getProperty(StatisticsDetail::directory)
 }

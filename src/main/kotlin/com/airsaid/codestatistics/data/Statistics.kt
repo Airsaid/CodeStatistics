@@ -8,24 +8,24 @@ import tornadofx.property
  */
 open class Statistics(fileSize: Long = 0L, fileCount: Long = 0L, totalLine: Long = 0L, codeLine: Long = 0L,
                  commentLine: Long = 0L, blankLine: Long = 0L, time: Long = 0L) {
-  var fileSize by property(fileSize)
+  var fileSize: Long by property(fileSize)
   fun fileSizeProperty() = getProperty(Statistics::fileSize)
 
-  var fileCount by property(fileCount)
+  var fileCount: Long by property(fileCount)
   fun fileCountProperty() = getProperty(Statistics::fileCount)
 
-  var totalLine by property(totalLine)
+  var totalLine: Long by property(totalLine)
   fun totalLineProperty() = getProperty(Statistics::totalLine)
 
-  var codeLine by property(codeLine)
+  var codeLine: Long by property(codeLine)
   fun codeLineProperty() = getProperty(Statistics::codeLine)
 
-  var commentLine by property(commentLine)
+  var commentLine: Long by property(commentLine)
   fun commentLineProperty() = getProperty(Statistics::commentLine)
 
-  var blankLine by property(blankLine)
+  var blankLine: Long by property(blankLine)
   fun blankLineProperty() = getProperty(Statistics::blankLine)
 
-  var time by property(time)
+  var time: Long by property(time)
   fun timeProperty() = getProperty(Statistics::time)
 }
