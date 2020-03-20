@@ -1,6 +1,6 @@
 package com.airsaid.codestatistics.controller
 
-import com.airsaid.codestatistics.data.StringSelected
+import com.airsaid.codestatistics.data.CodeDirectory
 import com.airsaid.codestatistics.data.viewmodel.DirectorysViewModel
 import javafx.collections.FXCollections
 import tornadofx.Controller
@@ -13,7 +13,7 @@ import java.io.File
  */
 class DirectorysController : Controller() {
 
-  val directorys = FXCollections.observableArrayList<StringSelected>()
+  val directorys = FXCollections.observableArrayList<CodeDirectory>()
 
   val selectedDirectory = DirectorysViewModel()
 
@@ -25,7 +25,7 @@ class DirectorysController : Controller() {
     runAsync {
       val jsonArray = config.jsonArray(KEY_ADD_DIRECTORYS)
       jsonArray?.map {
-        val directory = StringSelected()
+        val directory = CodeDirectory()
         directory.updateModel(it.asJsonObject())
         directory
       }
@@ -34,25 +34,16 @@ class DirectorysController : Controller() {
     }
   }
 
-  /**
-   * 添加要扫描的代码目录。
-   */
   fun addDirectory() {
     val directory = chooseDirectory() ?: return
-    directorys.add(StringSelected(directory.path))
+    directorys.add(CodeDirectory(directory.path))
   }
 
-  /**
-   * 删除选中的代码目录。
-   */
   fun deleteSelectedDirectory() {
     val selectedDir = selectedDirectory.item ?: return
     directorys.remove(selectedDir)
   }
 
-  /**
-   * 将添加的目录保存到本地中。
-   */
   fun save() {
     runAsync {
       val json = directorys.toJSON().toString()
@@ -64,7 +55,7 @@ class DirectorysController : Controller() {
   }
 
   fun getDirectoryFiles(): List<File> {
-    return directorys.filter { it.selected }.map { File(it.text) }
+    return directorys.filter { it.selected }.map { File(it.directory) }
   }
 
   companion object {

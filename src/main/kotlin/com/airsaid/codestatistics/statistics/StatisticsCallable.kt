@@ -1,5 +1,6 @@
 package com.airsaid.codestatistics.statistics
 
+import com.airsaid.codestatistics.data.CodeType
 import com.airsaid.codestatistics.data.StatisticsDetail
 import java.io.File
 import java.util.concurrent.Callable
@@ -7,7 +8,7 @@ import java.util.concurrent.Callable
 /**
  * @author airsaid
  */
-class StatisticsCallable(private val file: File) : Callable<StatisticsDetail?> {
+class StatisticsCallable(private val file: File, private val type: CodeType) : Callable<StatisticsDetail?> {
 
   private val startTime = System.nanoTime()
 
@@ -26,25 +27,33 @@ class StatisticsCallable(private val file: File) : Callable<StatisticsDetail?> {
       val line = lineStr.trim()
       // 处理空行情况
       if (line.isEmpty()) {
-        if (inComment) commentLine++
-        else blankLine++
-      } else { // 处理注释和代码行情况
-        val len = line.length
-        if (!inComment && line[0] == '/' && len >= 2 && line[1] == '/') {
-          commentLine++
-        } else if (!inComment && line[0] == '/' && len >= 2 && line[1] == '*') {
-          // 判断块注释是否在同一行中
-          if (!(line[len - 1] == '/' && line[len - 2] == '*')) {
-            inComment = true // 块注释不在同一行中，设置为处在注释块中
-          }
-          commentLine++
-        } else if (inComment) {
-          if (len >= 2 && line[len - 1] == '/' && line[len - 2] == '*') {
-            inComment = false // 注释块已经闭合
-          }
+        if (inComment) {
           commentLine++
         } else {
-          codeLine++
+          blankLine++
+        }
+      } else {
+        // 处理注释和代码行情况
+        val single = type.singleComments
+        val multiStart = type.multiCommentsStart
+        val multiEnd = type.multiCommentsEnd
+        if (!inComment) {
+          if (single.isNotEmpty() && line.startsWith(single)) { // 单行注释
+            commentLine++
+          } else if (multiStart.isNotEmpty() && line.startsWith(multiStart)) { // 多行注释开始
+            // 判断多行注释是否不在同一行中
+            if (multiEnd.isEmpty() || !line.endsWith(multiEnd)) {
+              inComment = true // 多行注释不在同一行中，设置为处在多行注释块中
+            }
+            commentLine++
+          } else {
+            codeLine++
+          }
+        } else {
+          if (multiEnd.isNotEmpty() && line.endsWith(multiEnd)) {
+            inComment = false // 多行注释结束
+          }
+          commentLine++
         }
       }
       totalLine++

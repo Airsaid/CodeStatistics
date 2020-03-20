@@ -1,7 +1,7 @@
 package com.airsaid.codestatistics.app
 
+import com.airsaid.codestatistics.controller.CodeTypeController
 import com.airsaid.codestatistics.controller.DirectorysController
-import com.airsaid.codestatistics.controller.ExtensionsController
 import com.airsaid.codestatistics.controller.StatisticsController
 import com.airsaid.codestatistics.view.StatisticsView
 import javafx.scene.input.KeyCode
@@ -17,7 +17,7 @@ import tornadofx.FX
 class StatisticsApp : App(StatisticsView::class, Styles::class) {
 
   private val directoryController: DirectorysController by inject()
-  private val extensionController: ExtensionsController by inject()
+  private val codeTypeController: CodeTypeController by inject()
   private val statisticsController: StatisticsController by inject()
 
   init {
@@ -30,7 +30,7 @@ class StatisticsApp : App(StatisticsView::class, Styles::class) {
     stage.setOnCloseRequest {
       statisticsController.stopStatistics()
       directoryController.save()
-      extensionController.save()
+      codeTypeController.save()
     }
   }
 }

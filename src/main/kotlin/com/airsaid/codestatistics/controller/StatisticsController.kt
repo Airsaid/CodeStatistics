@@ -1,5 +1,6 @@
 package com.airsaid.codestatistics.controller
 
+import com.airsaid.codestatistics.data.CodeType
 import com.airsaid.codestatistics.data.Statistics
 import com.airsaid.codestatistics.data.StatisticsDetail
 import com.airsaid.codestatistics.data.viewmodel.StatisticsViewModel
@@ -7,6 +8,7 @@ import com.airsaid.codestatistics.statistics.CodeStatistics
 import com.airsaid.codestatistics.statistics.CodeStatisticsListener
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.collections.FXCollections
+import javafx.collections.ObservableList
 import tornadofx.Controller
 import java.io.File
 import java.util.concurrent.TimeUnit
@@ -16,7 +18,7 @@ import java.util.concurrent.TimeUnit
  */
 class StatisticsController : Controller(), CodeStatisticsListener {
 
-  val statisticsDetails = FXCollections.observableArrayList<StatisticsDetail>()
+  val statisticsDetails: ObservableList<StatisticsDetail> = FXCollections.observableArrayList()
   val isRunnable = SimpleBooleanProperty(false)
   val statisticsTotal = StatisticsViewModel()
 
@@ -25,11 +27,11 @@ class StatisticsController : Controller(), CodeStatisticsListener {
   private val codeStatistics = CodeStatistics(this)
   private var startTime: Long = 0
 
-  fun startStatistics(files: List<File>, extensions: HashSet<String>) {
+  fun startStatistics(files: List<File>, types: Map<String, CodeType>) {
     if (isRunnable.get()) return
 
     statisticsTemp = Statistics()
-    codeStatistics.startStatistics(files, extensions)
+    codeStatistics.startStatistics(files, types)
   }
 
   fun stopStatistics() {

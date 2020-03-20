@@ -2,13 +2,13 @@ package com.airsaid.codestatistics.view
 
 import com.airsaid.codestatistics.app.Styles
 import com.airsaid.codestatistics.constant.Messages
+import com.airsaid.codestatistics.controller.CodeTypeController
 import com.airsaid.codestatistics.controller.DirectorysController
-import com.airsaid.codestatistics.controller.ExtensionsController
 import com.airsaid.codestatistics.controller.StatisticsController
-import com.airsaid.codestatistics.data.StringSelected
+import com.airsaid.codestatistics.data.CodeDirectory
+import com.airsaid.codestatistics.data.CodeType
 import com.airsaid.codestatistics.extension.isLetter
 import javafx.beans.property.SimpleBooleanProperty
-import javafx.beans.property.SimpleStringProperty
 import javafx.collections.ListChangeListener
 import javafx.geometry.Pos
 import javafx.scene.image.Image
@@ -23,7 +23,7 @@ import tornadofx.*
 class RequiredView : View() {
 
   private val directoryController: DirectorysController by inject()
-  private val extensionController: ExtensionsController by inject()
+  private val typeController: CodeTypeController by inject()
   private val statisticsController: StatisticsController by inject()
 
   private val startDisable = SimpleBooleanProperty(true)
@@ -60,12 +60,12 @@ class RequiredView : View() {
             checkbox(property = it.selectedProperty()).action {
               updateStartButtonState()
             }
-            text(it.textProperty())
+            text(it.directoryProperty())
           }
         }
       }
-      // 更新选中的目录数据
-      selectionModel.selectedItems.addListener(ListChangeListener<StringSelected> {
+
+      selectionModel.selectedItems.addListener(ListChangeListener<CodeDirectory> {
         directoryController.selectedDirectory.item = selectedItem
       })
     }
@@ -81,15 +81,15 @@ class RequiredView : View() {
 
       button(graphic = getAddImageView()) {
         hboxConstraints { marginRight = 10.0 }
-        action { showAddExtensionDialog() }
+        action { showCodeTypeDialog(CodeType()) }
       }
 
-      button(graphic = getDelImageView()).action { extensionController.deleteSelectedExtension() }
+      button(graphic = getDelImageView()).action { typeController.deleteSelectedType() }
 
       HBox.setHgrow(region, Priority.ALWAYS) // 撑满，从而让按钮在最右侧显示
     }
 
-    listview(extensionController.extensions) {
+    listview(typeController.types) {
       vgrow = Priority.ALWAYS
       cellFormat {
         graphic = cache {
@@ -97,13 +97,13 @@ class RequiredView : View() {
             checkbox(property = it.selectedProperty()).action {
               updateStartButtonState()
             }
-            text(it.textProperty())
+            text(it.extensionProperty())
           }
         }
       }
-      // 更新选中的目录数据
-      selectionModel.selectedItems.addListener(ListChangeListener<StringSelected> {
-        extensionController.selectedExtension.item = selectedItem
+
+      selectionModel.selectedItems.addListener(ListChangeListener<CodeType> {
+        typeController.selectedType.item = selectedItem
       })
     }
 
@@ -118,30 +118,35 @@ class RequiredView : View() {
   }
 
   init {
-    directoryController.directorys.addListener(ListChangeListener<StringSelected> {
+    directoryController.directorys.addListener(ListChangeListener<CodeDirectory> {
       updateStartButtonState()
     })
-    extensionController.extensions.addListener(ListChangeListener<StringSelected> {
+    typeController.types.addListener(ListChangeListener<CodeType> {
       updateStartButtonState()
     })
     updateStartButtonState()
   }
 
-  /**
-   * 显示添加文件扩展名弹框。
-   */
-  fun showAddExtensionDialog() {
-    val extension = SimpleStringProperty()
+  fun showCodeTypeDialog(codeType: CodeType) {
     dialog(messages[Messages.ADD_FILE_TYPE]) {
-      field(messages[Messages.EXTENSION]) {
-        textfield(extension) { filterInput { it.text.isLetter() } }
+      field("* ${messages[Messages.EXTENSION]}") {
+        textfield(codeType.extensionProperty()) { filterInput { it.text.isLetter() } }
+      }
+      field(messages[Messages.SINGLE_COMMENTS]) {
+        textfield(codeType.singleCommentsProperty())
+      }
+      field(messages[Messages.MULTI_COMMENTS_START]) {
+        textfield(codeType.multiCommentsStartProperty())
+      }
+      field(messages[Messages.MULTI_COMMENTS_END]) {
+        textfield(codeType.multiCommentsEndProperty())
       }
 
       buttonbar {
         button(messages[Messages.ADD]) {
-          disableWhen { extension.isEmpty }
+          disableWhen { codeType.extensionProperty().isBlank() }
           action {
-            extensionController.addExtension(StringSelected(extension.value))
+            typeController.addCodeType(codeType)
             close()
           }
         }
@@ -151,8 +156,8 @@ class RequiredView : View() {
 
   private fun startStatistics() {
     val files = directoryController.getDirectoryFiles()
-    val extensions = extensionController.getExtensionSet()
-    statisticsController.startStatistics(files, extensions)
+    val types = typeController.getTypeMap()
+    statisticsController.startStatistics(files, types)
   }
 
   // 多次使用同一个示例会导致只有最后使用的生效，因此每次使用时都创建一个新的实例
@@ -162,6 +167,6 @@ class RequiredView : View() {
 
   private fun updateStartButtonState() {
     startDisable.set(directoryController.directorys.all { !it.selected }
-        || extensionController.extensions.all { !it.selected })
+        || typeController.types.all { !it.selected })
   }
 }

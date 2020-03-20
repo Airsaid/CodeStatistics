@@ -1,5 +1,6 @@
 package com.airsaid.codestatistics.statistics
 
+import com.airsaid.codestatistics.data.CodeType
 import com.airsaid.codestatistics.data.StatisticsDetail
 import javafx.application.Platform
 import java.io.File
@@ -18,12 +19,18 @@ class CodeStatistics(private var listener: CodeStatisticsListener? = null) {
   private val dispatchThread = Executors.newSingleThreadExecutor()
   private val handlerThread = Executors.newSingleThreadExecutor()
 
-  fun startStatistics(dirs: List<File>, extensions: HashSet<String>) {
+  private lateinit var types: Map<String, CodeType>
+  private val added = HashSet<String>()
+
+  fun startStatistics(dirs: List<File>, types: Map<String, CodeType>) {
+    this.added.clear()
+    this.types = types
+
     listener?.beforeStatistics()
 
     // 由于任务的处理时间远比生产任务的耗时多，因此只使用一个线程派发任务
     dispatchThread.submit {
-      dirs.forEach { recurScanFile(it, extensions) }
+      dirs.forEach { recurScanFile(it) }
       // 任务添加完毕，最后添加一个 "毒丸" 对象用于判断是否结束
       executorService.submit { null }
     }
@@ -52,19 +59,21 @@ class CodeStatistics(private var listener: CodeStatisticsListener? = null) {
     this.listener = listener
   }
 
-  private fun recurScanFile(file: File, extensions: HashSet<String>) {
-    if (!file.exists() && !dispatchThread.isShutdown) return
+  private fun recurScanFile(file: File) {
+    if (dispatchThread.isShutdown ||
+        !file.exists() || added.contains(file.path)) return
 
     if (file.isDirectory) { // 是目录则递归扫描
       val listFile = file.listFiles()
       if (listFile != null && listFile.isNotEmpty()) {
         listFile.forEach {
-          if (!dispatchThread.isShutdown) recurScanFile(it, extensions)
+          if (!dispatchThread.isShutdown) recurScanFile(it)
         }
       }
-    } else if (file.isFile && extensions.contains(file.extension)) {
+    } else if (file.isFile && types.contains(file.extension)) {
       // 符合文件类型，将任务提交给线程池执行
-      executorService.submit(StatisticsCallable(file))
+      added.add(file.path)
+      executorService.submit(StatisticsCallable(file, types[file.extension] as CodeType))
     }
   }
 
