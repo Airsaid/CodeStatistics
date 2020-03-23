@@ -33,6 +33,7 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
     compile "no.tornado:tornadofx:$tornadofx_version"
+    compile 'no.tornado:tornadofx-controlsfx:0.1'
 
     testCompile "org.junit.jupiter:junit-jupiter-api:$junit_version"
     testRuntime "org.junit.jupiter:junit-jupiter-engine:$junit_version"

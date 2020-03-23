@@ -5,9 +5,11 @@ import com.airsaid.codestatistics.constant.Messages
 import com.airsaid.codestatistics.controller.CodeTypeController
 import com.airsaid.codestatistics.controller.DirectorysController
 import com.airsaid.codestatistics.controller.StatisticsController
+import com.airsaid.codestatistics.controller.StatisticsHistoryController
 import com.airsaid.codestatistics.data.CodeDirectory
 import com.airsaid.codestatistics.data.CodeType
 import com.airsaid.codestatistics.extension.isLetter
+import com.airsaid.codestatistics.utils.NotificationUtil
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.collections.ListChangeListener
 import javafx.geometry.Pos
@@ -25,6 +27,7 @@ class RequiredView : View() {
   private val directoryController: DirectorysController by inject()
   private val typeController: CodeTypeController by inject()
   private val statisticsController: StatisticsController by inject()
+  private val historyController: StatisticsHistoryController by inject()
 
   private val startDisable = SimpleBooleanProperty(true)
 
@@ -115,6 +118,19 @@ class RequiredView : View() {
       action { startStatistics() }
     }
 
+
+    button(messages[Messages.SAVE_RESULTS]) {
+      useMaxWidth = true
+      vgrow = Priority.ALWAYS
+      vboxConstraints { marginTop = 10.0 }
+      disableWhen { statisticsController.statisticsTotal.empty or statisticsController.isRunnable }
+      action {
+        val dirs = directoryController.getSelectedDirectorys()
+        val types = typeController.getSelectedExtensions()
+        historyController.addHistory(dirs, types, statisticsController.statisticsTotal.item)
+        NotificationUtil.show(messages[Messages.SAVE_SUCCESS])
+      }
+    }
   }
 
   init {

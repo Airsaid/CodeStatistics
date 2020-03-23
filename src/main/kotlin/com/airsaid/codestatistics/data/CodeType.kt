@@ -61,9 +61,9 @@ class CodeType(extension: String = "", singleComments: String = "",
   }
 
   companion object {
-    const val KEY_EXTENSION = "extension"
-    const val KEY_SINGLE_COMMENTS = "singleComments"
-    const val KEY_MULTI_COMMENTS_START = "multiCommentsStart"
-    const val KEY_MULTI_COMMENTS_END = "multiCommentsEnd"
+    private const val KEY_EXTENSION = "extension"
+    private const val KEY_SINGLE_COMMENTS = "singleComments"
+    private const val KEY_MULTI_COMMENTS_START = "multiCommentsStart"
+    private const val KEY_MULTI_COMMENTS_END = "multiCommentsEnd"
   }
 }

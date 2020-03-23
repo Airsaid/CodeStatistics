@@ -1,15 +1,18 @@
 package com.airsaid.codestatistics.controller
 
+import com.airsaid.codestatistics.constant.Messages
 import com.airsaid.codestatistics.data.CodeType
 import com.airsaid.codestatistics.data.Statistics
 import com.airsaid.codestatistics.data.StatisticsDetail
 import com.airsaid.codestatistics.data.viewmodel.StatisticsViewModel
 import com.airsaid.codestatistics.statistics.CodeStatistics
 import com.airsaid.codestatistics.statistics.CodeStatisticsListener
+import com.airsaid.codestatistics.utils.NotificationUtil
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import tornadofx.Controller
+import tornadofx.get
 import java.io.File
 import java.util.concurrent.TimeUnit
 
@@ -57,7 +60,8 @@ class StatisticsController : Controller(), CodeStatisticsListener {
   override fun afterStatistics() {
     isRunnable.set(false)
     statisticsTotal.item = statisticsTemp
-    statisticsTotal.time.value = TimeUnit.NANOSECONDS.toSeconds(System.nanoTime() - startTime)
+    statisticsTotal.timeConsuming.value = TimeUnit.NANOSECONDS.toSeconds(System.nanoTime() - startTime)
+    NotificationUtil.show(messages[Messages.STATISTICS_COMPLETED])
   }
 
 }

@@ -55,7 +55,11 @@ class CodeTypeController : Controller() {
     return types.filter { it.selected }.associate { it.extension to it }
   }
 
+  fun getSelectedExtensions(): String {
+    return types.filter { it.selected }.joinToString { it.extension }
+  }
+
   companion object {
-    const val KEY_ADD_CODE_TYPES = "addCodeTypes"
+    private const val KEY_ADD_CODE_TYPES = "addCodeTypes"
   }
 }

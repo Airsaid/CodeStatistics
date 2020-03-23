@@ -14,5 +14,5 @@ class StatisticsViewModel : ItemViewModel<Statistics>() {
   val codeLine = bind { SimpleLongProperty(item?.codeLine ?: 0L) }
   val commentLine = bind { SimpleLongProperty(item?.commentLine ?: 0L) }
   val blankLine = bind { SimpleLongProperty(item?.blankLine ?: 0L) }
-  val time = bind { SimpleLongProperty(item?.time ?: 0L) }
+  val timeConsuming = bind { SimpleLongProperty(item?.timeConsuming ?: 0L) }
 }

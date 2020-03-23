@@ -58,7 +58,11 @@ class DirectorysController : Controller() {
     return directorys.filter { it.selected }.map { File(it.directory) }
   }
 
+  fun getSelectedDirectorys(): String {
+    return directorys.filter { it.selected }.joinToString { it.directory }
+  }
+
   companion object {
-    const val KEY_ADD_DIRECTORYS = "addFileDir"
+    private const val KEY_ADD_DIRECTORYS = "addFileDir"
   }
 }

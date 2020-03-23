@@ -68,7 +68,7 @@ class StatisticsCallable(private val file: File, private val type: CodeType) : C
     statistics.codeLine = codeLine
     statistics.commentLine = commentLine
     statistics.blankLine = blankLine
-    statistics.time = System.nanoTime() - startTime
+    statistics.timeConsuming = System.nanoTime() - startTime
     return statistics
   }
 }

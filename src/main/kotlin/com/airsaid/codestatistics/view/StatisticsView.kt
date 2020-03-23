@@ -2,10 +2,14 @@ package com.airsaid.codestatistics.view
 
 import com.airsaid.codestatistics.constant.Messages
 import com.airsaid.codestatistics.controller.StatisticsController
+import com.airsaid.codestatistics.controller.StatisticsHistoryController
 import com.airsaid.codestatistics.data.StatisticsDetail
+import com.airsaid.codestatistics.data.StatisticsHistory
 import javafx.scene.control.TabPane
 import tornadofx.*
 import tornadofx.FX.Companion.messages
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 /**
  * @author airsaid
@@ -15,6 +19,9 @@ class StatisticsView : View(messages[Messages.APPLICATION_NAME]) {
   private val requiredView: RequiredView by inject()
 
   private val statisticsController: StatisticsController by inject()
+  private val historysController: StatisticsHistoryController by inject()
+
+  private val dateFormat = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
 
   override val root = borderpane {
     paddingAll = 10
@@ -59,8 +66,33 @@ class StatisticsView : View(messages[Messages.APPLICATION_NAME]) {
             field(messages[Messages.FILE_COUNT]) {
               textfield(statisticsController.statisticsTotal.fileCount) { isEditable = false }
             }
-            field(messages[Messages.STATISTICS_TIME]) {
-              textfield(statisticsController.statisticsTotal.time) { isEditable = false }
+            field(messages[Messages.STATISTICS_TIME_CONSUMING]) {
+              textfield(statisticsController.statisticsTotal.timeConsuming) { isEditable = false }
+            }
+          }
+        }
+      }
+
+      tab(messages[Messages.HISTORY]) {
+        tableview(historysController.historys) {
+          placeholder = label(messages[Messages.NO_DATA])
+
+          readonlyColumn(messages[Messages.DATE], StatisticsHistory::date) {
+            cellFormat { text = it.format(dateFormat) }
+          }
+          readonlyColumn(messages[Messages.FILE_DIRECTORY], StatisticsHistory::dirs)
+          readonlyColumn(messages[Messages.FILE_TYPE], StatisticsHistory::types)
+          readonlyColumn(messages[Messages.FILE_SIZE], StatisticsHistory::fileSize)
+          readonlyColumn(messages[Messages.TOTAL_LINE], StatisticsHistory::totalLine)
+          readonlyColumn(messages[Messages.CODE_LINE], StatisticsHistory::codeLine)
+          readonlyColumn(messages[Messages.COMMENT_LINE], StatisticsHistory::commentLine)
+          readonlyColumn(messages[Messages.BLANK_LINE], StatisticsHistory::blankLine)
+
+          contextmenu {
+            item(messages[Messages.DELETE]).action {
+              selectedItem?.apply {
+                historysController.removeHistory(this)
+              }
             }
           }
         }

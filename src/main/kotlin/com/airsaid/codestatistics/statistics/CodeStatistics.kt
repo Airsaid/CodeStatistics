@@ -14,11 +14,11 @@ import java.util.concurrent.TimeUnit
  */
 class CodeStatistics(private var listener: CodeStatisticsListener? = null) {
 
-  private lateinit var workThreadPool: ThreadPoolExecutor
-  private lateinit var executorService: ExecutorCompletionService<StatisticsDetail>
+  private var workThreadPool: ThreadPoolExecutor? = null
+  private var executorService: ExecutorCompletionService<StatisticsDetail>? = null
 
-  private lateinit var submitThread: Thread
-  private lateinit var dispatchThread: Thread
+  private var submitThread: Thread? = null
+  private var dispatchThread: Thread? = null
 
   private lateinit var types: Map<String, CodeType>
 
@@ -33,17 +33,19 @@ class CodeStatistics(private var listener: CodeStatisticsListener? = null) {
     this.submitThread = StatisticsThreadFactory().newThread {
       dirs.forEach { recurScanFile(it) }
       // 等待任务都执行完毕
-      workThreadPool.shutdown()
-      workThreadPool.awaitTermination(10, TimeUnit.MINUTES)
-      dispatchThread.interrupt()
+      workThreadPool?.shutdown()
+      workThreadPool?.awaitTermination(10, TimeUnit.MINUTES)
+      dispatchThread?.interrupt()
     }
 
     // 开启一个线程处理已经执行完成的任务
     this.dispatchThread = StatisticsThreadFactory().newThread {
-      while (!dispatchThread.isInterrupted) {
+      while (dispatchThread?.isInterrupted == false) {
         try {
-          val statistics = executorService.take().get()
-          Platform.runLater { listener?.statistics(statistics) }
+          val statistics = executorService?.take()?.get()
+          if (statistics != null) {
+            Platform.runLater { listener?.statistics(statistics) }
+          }
         } catch (e: InterruptedException) {
           Thread.currentThread().interrupt()
           Platform.runLater { listener?.afterStatistics() }
@@ -51,18 +53,22 @@ class CodeStatistics(private var listener: CodeStatisticsListener? = null) {
       }
     }
 
-    submitThread.start()
-    dispatchThread.start()
+    submitThread?.start()
+    dispatchThread?.start()
   }
 
   fun stopStatistics() {
-    if (!submitThread.isInterrupted) {
-      submitThread.interrupt()
+    submitThread?.let {
+      if (!it.isInterrupted) {
+        it.interrupt()
+      }
     }
-    if (!dispatchThread.isInterrupted) {
-      dispatchThread.interrupt()
+    dispatchThread?.let {
+      if (!it.isInterrupted) {
+        it.interrupt()
+      }
     }
-    workThreadPool.shutdownNow()
+    workThreadPool?.shutdownNow()
   }
 
   fun setCodeStatisticsListener(listener: CodeStatisticsListener) {
@@ -76,18 +82,21 @@ class CodeStatistics(private var listener: CodeStatisticsListener? = null) {
   }
 
   private fun recurScanFile(file: File) {
-    if (submitThread.isInterrupted || !file.exists()) return
+    if (submitThread?.isInterrupted != false) return
+    if (!file.exists()) return
 
     if (file.isDirectory) { // 是目录则递归扫描
       val listFile = file.listFiles()
       if (listFile != null && listFile.isNotEmpty()) {
         listFile.forEach {
-          if (!submitThread.isInterrupted) recurScanFile(it)
+          if (submitThread?.isInterrupted == false) {
+            recurScanFile(it)
+          }
         }
       }
     } else if (file.isFile && types.contains(file.extension)) {
       // 符合文件类型，将任务提交给线程池执行
-      executorService.submit(StatisticsCallable(file, types[file.extension] as CodeType))
+      executorService?.submit(StatisticsCallable(file, types[file.extension] as CodeType))
     }
   }
 

@@ -25,6 +25,6 @@ class CodeDirectory(directory: String = "", selected: Boolean = true) : Selected
   }
 
   companion object {
-    const val KEY_DIRECTORY = "directory"
+    private const val KEY_DIRECTORY = "directory"
   }
 }
