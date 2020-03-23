@@ -32,7 +32,6 @@ class StatisticsHistoryController : Controller() {
     }
   }
 
-
   fun addHistory(dirs: String, types: String, statistics: Statistics) {
     val history = StatisticsHistory(LocalDateTime.now(), dirs, types)
     history.fileSize = statistics.fileSize
@@ -43,6 +42,7 @@ class StatisticsHistoryController : Controller() {
     history.blankLine = statistics.blankLine
     history.timeConsuming = statistics.timeConsuming
     historys.add(0, history)
+    save()
   }
 
   fun removeHistory(history: StatisticsHistory) {

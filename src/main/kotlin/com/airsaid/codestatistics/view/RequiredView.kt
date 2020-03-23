@@ -50,8 +50,6 @@ class RequiredView : View() {
         action { directoryController.addDirectory() }
       }
 
-      button(graphic = getDelImageView()).action { directoryController.deleteSelectedDirectory() }
-
       HBox.setHgrow(region, Priority.ALWAYS) // 撑满，从而让按钮在最右侧显示
     }
 
@@ -68,9 +66,11 @@ class RequiredView : View() {
         }
       }
 
-      selectionModel.selectedItems.addListener(ListChangeListener<CodeDirectory> {
-        directoryController.selectedDirectory.item = selectedItem
-      })
+      contextmenu {
+        item(messages[Messages.DELETE]).action {
+          selectedItem?.apply { directoryController.deleteDirectory(this) }
+        }
+      }
     }
 
     hbox {
@@ -87,9 +87,7 @@ class RequiredView : View() {
         action { showCodeTypeDialog(CodeType()) }
       }
 
-      button(graphic = getDelImageView()).action { typeController.deleteSelectedType() }
-
-      HBox.setHgrow(region, Priority.ALWAYS) // 撑满，从而让按钮在最右侧显示
+      HBox.setHgrow(region, Priority.ALWAYS)
     }
 
     listview(typeController.types) {
@@ -105,9 +103,11 @@ class RequiredView : View() {
         }
       }
 
-      selectionModel.selectedItems.addListener(ListChangeListener<CodeType> {
-        typeController.selectedType.item = selectedItem
-      })
+      contextmenu {
+        item(messages[Messages.DELETE]).action {
+          selectedItem?.apply { typeController.deleteCodeType(this) }
+        }
+      }
     }
 
     button(messages[Messages.START_STATISTICS]) {
@@ -124,12 +124,7 @@ class RequiredView : View() {
       vgrow = Priority.ALWAYS
       vboxConstraints { marginTop = 10.0 }
       disableWhen { statisticsController.statisticsTotal.empty or statisticsController.isRunnable }
-      action {
-        val dirs = directoryController.getSelectedDirectorys()
-        val types = typeController.getSelectedExtensions()
-        historyController.addHistory(dirs, types, statisticsController.statisticsTotal.item)
-        NotificationUtil.show(messages[Messages.SAVE_SUCCESS])
-      }
+      action { saveStatistics() }
     }
   }
 
@@ -145,7 +140,7 @@ class RequiredView : View() {
 
   fun showCodeTypeDialog(codeType: CodeType) {
     dialog(messages[Messages.ADD_FILE_TYPE]) {
-      field("* ${messages[Messages.EXTENSION]}") {
+      field("${messages[Messages.EXTENSION]} *") {
         textfield(codeType.extensionProperty()) { filterInput { it.text.isLetter() } }
       }
       field(messages[Messages.SINGLE_COMMENTS]) {
@@ -176,10 +171,15 @@ class RequiredView : View() {
     statisticsController.startStatistics(files, types)
   }
 
+  private fun saveStatistics() {
+    val dirs = directoryController.getSelectedDirectorys()
+    val types = typeController.getSelectedExtensions()
+    historyController.addHistory(dirs, types, statisticsController.statisticsTotal.item)
+    NotificationUtil.show(messages[Messages.SAVE_SUCCESS])
+  }
+
   // 多次使用同一个示例会导致只有最后使用的生效，因此每次使用时都创建一个新的实例
   private fun getAddImageView() = ImageView(Image(resources.stream("/images/ic_add_dir.png"), 14.0, 14.0, true, false))
-
-  private fun getDelImageView() = ImageView(Image(resources.stream("/images/ic_del_dir.png"), 14.0, 14.0, true, false))
 
   private fun updateStartButtonState() {
     startDisable.set(directoryController.directorys.all { !it.selected }

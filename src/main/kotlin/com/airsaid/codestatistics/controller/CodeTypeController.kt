@@ -1,19 +1,17 @@
 package com.airsaid.codestatistics.controller
 
 import com.airsaid.codestatistics.data.CodeType
-import com.airsaid.codestatistics.data.viewmodel.CodeTypeViewModel
-import javafx.collections.FXCollections
 import tornadofx.Controller
+import tornadofx.observable
 import tornadofx.toJSON
+import java.util.*
 
 /**
  * @author airsaid
  */
 class CodeTypeController : Controller() {
 
-  val types = FXCollections.observableArrayList<CodeType>()
-
-  val selectedType = CodeTypeViewModel()
+  val types = LinkedList<CodeType>().observable()
 
   init {
     loadLocalData()
@@ -36,9 +34,8 @@ class CodeTypeController : Controller() {
     types.add(type)
   }
 
-  fun deleteSelectedType() {
-    val selectedType = selectedType.item ?: return
-    types.remove(selectedType)
+  fun deleteCodeType(type: CodeType) {
+    types.remove(type)
   }
 
   fun save() {

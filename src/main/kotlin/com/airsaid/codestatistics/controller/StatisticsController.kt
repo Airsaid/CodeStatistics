@@ -9,11 +9,11 @@ import com.airsaid.codestatistics.statistics.CodeStatistics
 import com.airsaid.codestatistics.statistics.CodeStatisticsListener
 import com.airsaid.codestatistics.utils.NotificationUtil
 import javafx.beans.property.SimpleBooleanProperty
-import javafx.collections.FXCollections
-import javafx.collections.ObservableList
 import tornadofx.Controller
 import tornadofx.get
+import tornadofx.observable
 import java.io.File
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 /**
@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit
  */
 class StatisticsController : Controller(), CodeStatisticsListener {
 
-  val statisticsDetails: ObservableList<StatisticsDetail> = FXCollections.observableArrayList()
+  val statisticsDetails = LinkedList<StatisticsDetail>().observable()
   val isRunnable = SimpleBooleanProperty(false)
   val statisticsTotal = StatisticsViewModel()
 
@@ -48,7 +48,7 @@ class StatisticsController : Controller(), CodeStatisticsListener {
   }
 
   override fun statistics(statistics: StatisticsDetail) {
-    statisticsDetails.add(statistics)
+    statisticsDetails.add(0, statistics)
     statisticsTemp.fileCount += 1
     statisticsTemp.fileSize += statistics.fileSize
     statisticsTemp.totalLine += statistics.totalLine

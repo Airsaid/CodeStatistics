@@ -1,21 +1,19 @@
 package com.airsaid.codestatistics.controller
 
 import com.airsaid.codestatistics.data.CodeDirectory
-import com.airsaid.codestatistics.data.viewmodel.DirectorysViewModel
-import javafx.collections.FXCollections
 import tornadofx.Controller
 import tornadofx.chooseDirectory
+import tornadofx.observable
 import tornadofx.toJSON
 import java.io.File
+import java.util.*
 
 /**
  * @author airsaid
  */
 class DirectorysController : Controller() {
 
-  val directorys = FXCollections.observableArrayList<CodeDirectory>()
-
-  val selectedDirectory = DirectorysViewModel()
+  val directorys = LinkedList<CodeDirectory>().observable()
 
   init {
     loadLocalData()
@@ -39,9 +37,8 @@ class DirectorysController : Controller() {
     directorys.add(CodeDirectory(directory.path))
   }
 
-  fun deleteSelectedDirectory() {
-    val selectedDir = selectedDirectory.item ?: return
-    directorys.remove(selectedDir)
+  fun deleteDirectory(dir: CodeDirectory) {
+    directorys.remove(dir)
   }
 
   fun save() {
