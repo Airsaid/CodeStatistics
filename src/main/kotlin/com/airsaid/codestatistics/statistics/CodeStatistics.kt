@@ -4,75 +4,89 @@ import com.airsaid.codestatistics.data.CodeType
 import com.airsaid.codestatistics.data.StatisticsDetail
 import javafx.application.Platform
 import java.io.File
-import java.util.concurrent.*
+import java.util.concurrent.ExecutorCompletionService
+import java.util.concurrent.LinkedBlockingQueue
+import java.util.concurrent.ThreadPoolExecutor
+import java.util.concurrent.TimeUnit
 
 /**
  * @author airsaid
  */
 class CodeStatistics(private var listener: CodeStatisticsListener? = null) {
 
-  private val executor = ThreadPoolExecutor(corePoolSize, maxPoolSize,
-      60, TimeUnit.SECONDS, LinkedBlockingQueue(workQueueSize),
-      Executors.defaultThreadFactory(), ThreadPoolExecutor.CallerRunsPolicy())
-  private val executorService = ExecutorCompletionService<StatisticsDetail?>(executor)
+  private lateinit var workThreadPool: ThreadPoolExecutor
+  private lateinit var executorService: ExecutorCompletionService<StatisticsDetail>
 
-  private val dispatchThread = Executors.newSingleThreadExecutor()
-  private val handlerThread = Executors.newSingleThreadExecutor()
+  private lateinit var submitThread: Thread
+  private lateinit var dispatchThread: Thread
 
   private lateinit var types: Map<String, CodeType>
-  private val added = HashSet<String>()
 
   fun startStatistics(dirs: List<File>, types: Map<String, CodeType>) {
-    this.added.clear()
-    this.types = types
-
     listener?.beforeStatistics()
 
-    // 由于任务的处理时间远比生产任务的耗时多，因此只使用一个线程派发任务
-    dispatchThread.submit {
+    this.types = types
+    this.workThreadPool = makeThreadPool()
+    this.executorService = ExecutorCompletionService(workThreadPool)
+
+    // 由于任务的处理时间远比生产任务的耗时多，因此只使用一个线程生产任务
+    this.submitThread = StatisticsThreadFactory().newThread {
       dirs.forEach { recurScanFile(it) }
-      // 任务添加完毕，最后添加一个 "毒丸" 对象用于判断是否结束
-      executorService.submit { null }
+      // 等待任务都执行完毕
+      workThreadPool.shutdown()
+      workThreadPool.awaitTermination(10, TimeUnit.MINUTES)
+      dispatchThread.interrupt()
     }
 
     // 开启一个线程处理已经执行完成的任务
-    handlerThread.submit {
-      while (true) {
-        val statistics = executorService.take().get()
-        if (statistics != null) {
+    this.dispatchThread = StatisticsThreadFactory().newThread {
+      while (!dispatchThread.isInterrupted) {
+        try {
+          val statistics = executorService.take().get()
           Platform.runLater { listener?.statistics(statistics) }
-        } else {
+        } catch (e: InterruptedException) {
+          Thread.currentThread().interrupt()
           Platform.runLater { listener?.afterStatistics() }
-          break
         }
       }
     }
+
+    submitThread.start()
+    dispatchThread.start()
   }
 
   fun stopStatistics() {
-    executor.shutdownNow()
-    dispatchThread.shutdownNow()
-    handlerThread.shutdownNow()
+    if (!submitThread.isInterrupted) {
+      submitThread.interrupt()
+    }
+    if (!dispatchThread.isInterrupted) {
+      dispatchThread.interrupt()
+    }
+    workThreadPool.shutdownNow()
   }
 
   fun setCodeStatisticsListener(listener: CodeStatisticsListener) {
     this.listener = listener
   }
 
+  private fun makeThreadPool(): ThreadPoolExecutor {
+    return ThreadPoolExecutor(corePoolSize, maxPoolSize,
+        60, TimeUnit.SECONDS, LinkedBlockingQueue(workQueueSize),
+        StatisticsThreadFactory(), ThreadPoolExecutor.CallerRunsPolicy())
+  }
+
   private fun recurScanFile(file: File) {
-    if (dispatchThread.isShutdown ||
-        !file.exists() || added.contains(file.path)) return
+    if (submitThread.isInterrupted || !file.exists()) return
 
     if (file.isDirectory) { // 是目录则递归扫描
       val listFile = file.listFiles()
       if (listFile != null && listFile.isNotEmpty()) {
         listFile.forEach {
-          if (!dispatchThread.isShutdown) recurScanFile(it)
+          if (!submitThread.isInterrupted) recurScanFile(it)
         }
       }
     } else if (file.isFile && types.contains(file.extension)) {
       // 符合文件类型，将任务提交给线程池执行
-      added.add(file.path)
       executorService.submit(StatisticsCallable(file, types[file.extension] as CodeType))
     }
   }
