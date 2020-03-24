@@ -1,0 +1,46 @@
+<component name="ArtifactManager">
+  <artifact type="javafx" name="CodeStatistics">
+    <output-path>$PROJECT_DIR$/out/artifacts/CodeStatistics</output-path>
+    <properties id="javafx-properties">
+      <options>
+        <option name="appClass" value="com.airsaid.codestatistics.app.StatisticsApp" />
+        <option name="description" value="Statistical code information." />
+        <option name="htmlPlaceholderId" value="" />
+        <option name="icons">
+          <JavaFxApplicationIcons>
+            <option name="linuxIcon" value="$PROJECT_DIR$/src/main/resources/images/icon.png" />
+            <option name="macIcon" value="$PROJECT_DIR$/src/main/resources/images/icon.icns" />
+            <option name="windowsIcon" value="$PROJECT_DIR$/src/main/resources/images/icon.ico" />
+          </JavaFxApplicationIcons>
+        </option>
+        <option name="nativeBundle" value="dmg" />
+        <option name="title" value="CodeStatistics" />
+        <option name="vendor" value="Airsaid" />
+        <option name="version" value="0.1" />
+      </options>
+    </properties>
+    <root id="root">
+      <element id="archive" name="CodeStatistics.jar">
+        <element id="module-output" name="CodeStatistics_main" />
+        <element id="library" level="project" name="Gradle: javax.json:javax.json-api:1.1.2" />
+        <element id="library" level="project" name="Gradle: no.tornado:tornadofx-controlsfx:0.1" />
+        <element id="library" level="project" name="Gradle: no.tornado:tornadofx:1.7.17" />
+        <element id="library" level="project" name="Gradle: org.apiguardian:apiguardian-api:1.0.0" />
+        <element id="library" level="project" name="Gradle: org.controlsfx:controlsfx:8.40.14" />
+        <element id="library" level="project" name="Gradle: org.glassfish:javax.json:1.1.2" />
+        <element id="library" level="project" name="Gradle: org.jetbrains.kotlin:kotlin-reflect:1.2.60" />
+        <element id="library" level="project" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-common:1.2.60" />
+        <element id="library" level="project" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.2.60" />
+        <element id="library" level="project" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.60" />
+        <element id="library" level="project" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.2.60" />
+        <element id="library" level="project" name="Gradle: org.jetbrains:annotations:13.0" />
+        <element id="library" level="project" name="Gradle: org.junit.jupiter:junit-jupiter-api:5.1.0" />
+        <element id="library" level="project" name="Gradle: org.junit.jupiter:junit-jupiter-engine:5.1.0" />
+        <element id="library" level="project" name="Gradle: org.junit.platform:junit-platform-commons:1.1.0" />
+        <element id="library" level="project" name="Gradle: org.junit.platform:junit-platform-engine:1.1.0" />
+        <element id="library" level="project" name="Gradle: org.opentest4j:opentest4j:1.0.0" />
+        <element id="dir-copy" path="$PROJECT_DIR$/src/main/resources" />
+      </element>
+    </root>
+  </artifact>
+</component>
