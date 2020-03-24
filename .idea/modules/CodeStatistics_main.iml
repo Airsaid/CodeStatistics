@@ -38,11 +38,23 @@
     <orderEntry type="library" name="Gradle: no.tornado:tornadofx-controlsfx:0.1" level="project" />
     <orderEntry type="library" name="Gradle: no.tornado:tornadofx:1.7.17" level="project" />
     <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.60" level="project" />
+    <orderEntry type="library" name="Gradle: com.github.liaochong:myexcel:3.5.1" level="project" />
     <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.2.60" level="project" />
     <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-reflect:1.2.60" level="project" />
     <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.2.60" level="project" />
     <orderEntry type="library" name="Gradle: org.glassfish:javax.json:1.1.2" level="project" />
     <orderEntry type="library" name="Gradle: org.controlsfx:controlsfx:8.40.14" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.poi:poi-ooxml:4.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.jsoup:jsoup:1.13.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.slf4j:slf4j-api:1.7.26" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.poi:poi:4.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.poi:poi-ooxml-schemas:4.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.commons:commons-compress:1.19" level="project" />
+    <orderEntry type="library" name="Gradle: com.github.virtuald:curvesapi:1.06" level="project" />
+    <orderEntry type="library" name="Gradle: commons-codec:commons-codec:1.13" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.commons:commons-collections4:4.4" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.commons:commons-math3:3.6.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.xmlbeans:xmlbeans:3.1.0" level="project" />
     <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-common:1.2.60" level="project" />
     <orderEntry type="library" name="Gradle: org.jetbrains:annotations:13.0" level="project" />
     <orderEntry type="library" name="Gradle: javax.json:javax.json-api:1.1.2" level="project" />

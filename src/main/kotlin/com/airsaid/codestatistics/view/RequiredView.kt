@@ -32,7 +32,7 @@ class RequiredView : View() {
   private val startDisable = SimpleBooleanProperty(true)
 
   override val root = vbox {
-    paddingRight = 10.0
+    paddingAll = 10
     prefHeight = 600.0
     prefWidth = 200.0
 

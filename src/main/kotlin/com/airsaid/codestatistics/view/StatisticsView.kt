@@ -1,10 +1,12 @@
 package com.airsaid.codestatistics.view
 
 import com.airsaid.codestatistics.constant.Messages
+import com.airsaid.codestatistics.controller.ExportController
 import com.airsaid.codestatistics.controller.StatisticsController
 import com.airsaid.codestatistics.controller.StatisticsHistoryController
 import com.airsaid.codestatistics.data.StatisticsDetail
 import com.airsaid.codestatistics.data.StatisticsHistory
+import com.airsaid.codestatistics.utils.NotificationUtil
 import javafx.scene.control.TabPane
 import tornadofx.*
 import tornadofx.FX.Companion.messages
@@ -20,15 +22,27 @@ class StatisticsView : View(messages[Messages.APPLICATION_NAME]) {
 
   private val statisticsController: StatisticsController by inject()
   private val historysController: StatisticsHistoryController by inject()
+  private val exportController: ExportController by inject()
 
   private val dateFormat = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
 
   override val root = borderpane {
-    paddingAll = 10
+    top = menubar {
+      menu(messages[Messages.FILE]) {
+        menu(messages[Messages.EXPORT_TO]) {
+          item("Excel").action { exportExcel() }
+          item("Csv").action { exportCsv() }
+        }
+      }
+    }
 
     left = requiredView.root
 
     center = tabpane {
+      paddingTop = 10.0
+      paddingRight = 10.0
+      paddingBottom = 10.0
+
       tabClosingPolicy = TabPane.TabClosingPolicy.UNAVAILABLE
 
       tab(messages[Messages.DETAILS]) {
@@ -100,5 +114,21 @@ class StatisticsView : View(messages[Messages.APPLICATION_NAME]) {
 
     }
 
+  }
+
+  private fun exportExcel() {
+    if (statisticsController.statisticsDetails.isNotEmpty()) {
+      exportController.exportExcel(statisticsController.statisticsDetails)
+    } else {
+      NotificationUtil.show(messages[Messages.NO_DATA])
+    }
+  }
+
+  private fun exportCsv() {
+    if (statisticsController.statisticsDetails.isNotEmpty()) {
+      exportController.exportCsv(statisticsController.statisticsDetails)
+    } else {
+      NotificationUtil.show(messages[Messages.NO_DATA])
+    }
   }
 }

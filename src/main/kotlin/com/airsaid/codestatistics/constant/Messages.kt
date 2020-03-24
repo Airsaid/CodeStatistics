@@ -36,4 +36,8 @@ object Messages {
   const val STATISTICS_COMPLETED = "statisticsCompleted"
   const val DELETE = "delete"
   const val EDITOR = "editor"
+  const val FILE = "file"
+  const val EXPORT_TO = "exportTo"
+  const val EXPORT_COMPLETED = "exportCompleted"
+  const val EXPORT_FAILED = "exportFailed"
 }
