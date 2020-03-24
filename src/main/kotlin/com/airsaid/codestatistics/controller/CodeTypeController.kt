@@ -56,6 +56,13 @@ class CodeTypeController : Controller() {
     return types.filter { it.selected }.joinToString { it.extension }
   }
 
+  fun updateCodeType(old: CodeType, new: CodeType) {
+    old.extension = new.extension
+    old.singleComments = new.singleComments
+    old.multiCommentsStart = new.multiCommentsStart
+    old.multiCommentsEnd = new.multiCommentsEnd
+  }
+
   companion object {
     private const val KEY_ADD_CODE_TYPES = "addCodeTypes"
   }

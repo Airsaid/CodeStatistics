@@ -84,7 +84,7 @@ class RequiredView : View() {
 
       button(graphic = getAddImageView()) {
         hboxConstraints { marginRight = 10.0 }
-        action { showCodeTypeDialog(CodeType()) }
+        action { showCodeTypeDialog(null, CodeType()) }
       }
 
       HBox.setHgrow(region, Priority.ALWAYS)
@@ -104,6 +104,10 @@ class RequiredView : View() {
       }
 
       contextmenu {
+        item(messages[Messages.EDITOR]).action {
+          selectedItem?.apply { showCodeTypeDialog(this, this.copy()) }
+        }
+
         item(messages[Messages.DELETE]).action {
           selectedItem?.apply { typeController.deleteCodeType(this) }
         }
@@ -117,7 +121,6 @@ class RequiredView : View() {
       disableWhen { startDisable or statisticsController.isRunnable }
       action { startStatistics() }
     }
-
 
     button(messages[Messages.SAVE_RESULTS]) {
       useMaxWidth = true
@@ -138,8 +141,9 @@ class RequiredView : View() {
     updateStartButtonState()
   }
 
-  fun showCodeTypeDialog(codeType: CodeType) {
-    dialog(messages[Messages.ADD_FILE_TYPE]) {
+  fun showCodeTypeDialog(oldCodeType: CodeType?, codeType: CodeType) {
+    val isModify = oldCodeType != null
+    dialog(messages[if (isModify) Messages.MODIFY_FILE_TYPE else Messages.ADD_FILE_TYPE]) {
       field("${messages[Messages.EXTENSION]} *") {
         textfield(codeType.extensionProperty()) { filterInput { it.text.isLetter() } }
       }
@@ -152,12 +156,15 @@ class RequiredView : View() {
       field(messages[Messages.MULTI_COMMENTS_END]) {
         textfield(codeType.multiCommentsEndProperty())
       }
-
       buttonbar {
-        button(messages[Messages.ADD]) {
+        button(messages[if (isModify) Messages.MODIFY else Messages.ADD]) {
           disableWhen { codeType.extensionProperty().isBlank() }
           action {
-            typeController.addCodeType(codeType)
+            if (isModify) {
+              typeController.updateCodeType(oldCodeType as CodeType, codeType)
+            } else {
+              typeController.addCodeType(codeType)
+            }
             close()
           }
         }
