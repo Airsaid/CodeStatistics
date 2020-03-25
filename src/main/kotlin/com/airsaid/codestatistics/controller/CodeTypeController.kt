@@ -31,7 +31,9 @@ class CodeTypeController : Controller() {
   }
 
   fun addCodeType(type: CodeType) {
-    types.add(type)
+    if (!types.contains(type)) {
+      types.add(type)
+    }
   }
 
   fun deleteCodeType(type: CodeType) {

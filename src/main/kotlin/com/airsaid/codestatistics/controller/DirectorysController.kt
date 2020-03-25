@@ -34,7 +34,10 @@ class DirectorysController : Controller() {
 
   fun addDirectory() {
     val directory = chooseDirectory() ?: return
-    directorys.add(CodeDirectory(directory.path))
+    val codeDirectory = CodeDirectory(directory.path)
+    if (!directorys.contains(codeDirectory)) {
+      directorys.add(codeDirectory)
+    }
   }
 
   fun deleteDirectory(dir: CodeDirectory) {

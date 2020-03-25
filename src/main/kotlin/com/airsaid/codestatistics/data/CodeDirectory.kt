@@ -1,6 +1,7 @@
 package com.airsaid.codestatistics.data
 
 import tornadofx.*
+import java.util.*
 import javax.json.JsonObject
 
 /**
@@ -22,6 +23,16 @@ class CodeDirectory(directory: String = "", selected: Boolean = true) : Selected
     with(json) {
       add(KEY_DIRECTORY, directory)
     }
+  }
+
+  override fun equals(other: Any?): Boolean {
+    if (other === this) return true
+    if (other !is CodeDirectory) return false
+    return other.directory == this.directory
+  }
+
+  override fun hashCode(): Int {
+    return Objects.hash(directory)
   }
 
   companion object {
