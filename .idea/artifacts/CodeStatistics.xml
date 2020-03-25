@@ -3,8 +3,10 @@
     <output-path>$PROJECT_DIR$/out/artifacts/CodeStatistics</output-path>
     <properties id="javafx-properties">
       <options>
+        <option name="alias" value="" />
         <option name="appClass" value="com.airsaid.codestatistics.app.StatisticsApp" />
         <option name="description" value="Statistical code information." />
+        <option name="enabledSigning" value="true" />
         <option name="htmlPlaceholderId" value="" />
         <option name="icons">
           <JavaFxApplicationIcons>
@@ -13,6 +15,7 @@
             <option name="windowsIcon" value="$PROJECT_DIR$/src/main/resources/images/icon.ico" />
           </JavaFxApplicationIcons>
         </option>
+        <option name="keystore" value="" />
         <option name="nativeBundle" value="dmg" />
         <option name="title" value="CodeStatistics" />
         <option name="vendor" value="Airsaid" />
@@ -40,6 +43,18 @@
         <element id="library" level="project" name="Gradle: org.junit.platform:junit-platform-engine:1.1.0" />
         <element id="library" level="project" name="Gradle: org.opentest4j:opentest4j:1.0.0" />
         <element id="dir-copy" path="$PROJECT_DIR$/src/main/resources" />
+        <element id="library" level="project" name="Gradle: com.github.liaochong:myexcel:3.5.1" />
+        <element id="library" level="project" name="Gradle: com.github.virtuald:curvesapi:1.06" />
+        <element id="library" level="project" name="Gradle: commons-codec:commons-codec:1.13" />
+        <element id="library" level="project" name="Gradle: org.apache.commons:commons-collections4:4.4" />
+        <element id="library" level="project" name="Gradle: org.apache.commons:commons-compress:1.19" />
+        <element id="library" level="project" name="Gradle: org.apache.commons:commons-math3:3.6.1" />
+        <element id="library" level="project" name="Gradle: org.apache.poi:poi-ooxml-schemas:4.1.1" />
+        <element id="library" level="project" name="Gradle: org.apache.poi:poi-ooxml:4.1.1" />
+        <element id="library" level="project" name="Gradle: org.apache.poi:poi:4.1.1" />
+        <element id="library" level="project" name="Gradle: org.apache.xmlbeans:xmlbeans:3.1.0" />
+        <element id="library" level="project" name="Gradle: org.jsoup:jsoup:1.13.1" />
+        <element id="library" level="project" name="Gradle: org.slf4j:slf4j-api:1.7.26" />
       </element>
     </root>
   </artifact>
