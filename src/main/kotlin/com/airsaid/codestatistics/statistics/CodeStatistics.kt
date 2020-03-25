@@ -22,9 +22,12 @@ class CodeStatistics(private var listener: CodeStatisticsListener? = null) {
 
   private lateinit var types: Map<String, CodeType>
 
+  private val added = HashSet<String>()
+
   fun startStatistics(dirs: List<File>, types: Map<String, CodeType>) {
     listener?.beforeStatistics()
 
+    this.added.clear()
     this.types = types
     this.workThreadPool = makeThreadPool()
     this.executorService = ExecutorCompletionService(workThreadPool)
@@ -84,6 +87,7 @@ class CodeStatistics(private var listener: CodeStatisticsListener? = null) {
   private fun recurScanFile(file: File) {
     if (submitThread?.isInterrupted != false) return
     if (!file.exists()) return
+    if (added.contains(file.path)) return
 
     if (file.isDirectory) { // 是目录则递归扫描
       val listFile = file.listFiles()
@@ -96,6 +100,7 @@ class CodeStatistics(private var listener: CodeStatisticsListener? = null) {
       }
     } else if (file.isFile && types.contains(file.extension)) {
       // 符合文件类型，将任务提交给线程池执行
+      added.add(file.path)
       executorService?.submit(StatisticsCallable(file, types[file.extension] as CodeType))
     }
   }
